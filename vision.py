@@ -4,7 +4,7 @@ import numpy as np
 import os
 import pyautogui
 import subprocess
-
+import sys
 import mss
 import mss.tools
 
@@ -25,6 +25,10 @@ def getRunliteWindow():
   return [int(item) for item in res.split("\n")][-1]
 
 WIN = getRunliteWindow()
+
+print(f'RuneLite not found')
+sys.exit(1)
+
 
 def get_region():
   return c(f'xdotool getwindowgeometry {WIN}')
