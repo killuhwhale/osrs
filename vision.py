@@ -37,9 +37,10 @@ def moveWindow(x, y):
   c(f'xdotool windowmove {WIN} {x} {y}')
 
 
-def get_ss():
-  screen, region = extract_region_data(get_region())
+def get_ss(screen, region):
+
   print(f'Screen: {screen}')
+
 
   # return pyautogui.screenshot(region=region)
   with mss.mss() as sct:
@@ -56,7 +57,11 @@ def extract_region_data(data):
   pos_screen = lines[1].split(" ")
   screen = pos_screen[-1].replace(")","")
 
+
+
+
   x, y = pos_screen[3].split(',')
+
   w, h = lines[2].split(' ')[-1].split('x')
 
   return [int(screen), (int(x), int(y), int(w), int(h),) ]
@@ -101,9 +106,9 @@ def findClickPositions(needle_img_path, haystack_img, threshold=0.5, debug_mode=
   if len(rectangles):
       #print('Found needle.')
 
-      line_color = (0, 255, 0)
+      line_color = (255, 255, 255)
       line_type = cv.LINE_4
-      marker_color = (255, 0, 255)
+      marker_color = (255, 255, 255)
       marker_type = cv.MARKER_CROSS
 
       # Loop over all the rectangles
@@ -140,11 +145,13 @@ loop_time = time()
 def run():
   global loop_time
   while(True):
-    ss = get_ss()
+    screen, region = extract_region_data(get_region())
+    ss = get_ss(screen, region)
     ss = np.array(ss)
     # cv.imshow('OpenCV', needle_im)
 
-    pos = findClickPositions('test.png', ss, 0.5)
+    pos = findClickPositions('test.png', ss, 0.5, 'rectangles')
+    pos = [(p[0] + region[1], p[1] + region[0], ) for p in pos]
     print(pos)
 
     print(f'FPS: {1/(time() - loop_time)}')
@@ -158,9 +165,9 @@ def run():
 
 
 if __name__ == "__main__":
-  # set_window_size(1000, 300)
-  # moveWindow(0, 0)
-  # run()
-  # [(277, 187), (423, 223)]
+  set_window_size(1000, 300)
+  moveWindow(50, 0)
+  run()
+
   # get_ss()
-  get_mouse_pos()
+  # get_mouse_pos()
